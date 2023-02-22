@@ -18,6 +18,7 @@ Birdel can generate actors (or components same to ViewComponent generator)
 # Nested namespace example
 $ birdel act Ui::AngryCatActor
 ```
+
 ```
 app/
 ├─ bactors/
@@ -25,10 +26,12 @@ app/
 ├───── angry_cat_actor/
 ├─────── angry_cat_actor.rb
 ├─────── angry_cat_actor_specification.rb
+```
 
 ```
 $ birdel com Ui::TopBarComponent
 ```
+
 ```
 app/
 ├─ components/
