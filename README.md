@@ -2,7 +2,7 @@
 
 Use actors as never before
 
-## 🛣️ Router - resolve request/respond
+## 🛣️ Rona - resolve request/respond
 
 Processing birdel.js actors requests based on request specifications. And response based on response specification
 
