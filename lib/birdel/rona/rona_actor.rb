@@ -13,7 +13,7 @@ module Birdel
           actor_string = actor_name.split("__").map{|e| e.camelize}.join("::")
           res_name = actor_string << "::#{actor_string.split("::")[-1]}"
           actor = res_name.constantize.new()
-          method_res = actor.public_send(method, inputs, current_user)
+          method_res = actor.public_send(method, inputs, self.current_user)
           res = {
             "ok": method_res[:ok],
             "message": method_res[:message],
