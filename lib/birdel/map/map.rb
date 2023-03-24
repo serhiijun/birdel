@@ -1,6 +1,3 @@
-require "pathname"
-require 'active_support/inflector'
-require 'colored'
 
 class Birdel::Map
   def initialize
