@@ -1,77 +1,86 @@
-# Birdel - make rails great again 🐦
+# Birdel - microframework for rails
+The new coding way to server<->client speaking and assets management
+## 🛣️ Rona
+This module proces JSON request and send inputs to actor method. Inside actor method you can write your custom code and response some output values. If request has required_component field - Rona module will authomatically render that component by passing outputs values to this component.
 
-Use actors as never before
+### Rona usage example
 
-## 🛣️ Rona - resolve request/respond
+```js
+  // Js request from any Birdel actor or Stimulus controller
+  const req = {
+    "actor": "ui__sunny_squirrel_actor",
+    "method": "get_article",
+    "required_component": "home--article-component",
+    "inputs": {
+      "articleId": 69
+    },
+    "callback": {
+      "component":   "home--articles-component",
+      "actor":       "articles-component-actor",
+      "method":      "renderArticle",
+      "resource_id": false
+    }
+  }
+  window.Birdel.send(req);
 
-Processing birdel.js actors requests based on request specifications. And response based on response specification
-
-## 🔄 Cif - Chain of Responsibility pattern
-
-Each actor should be sure, that previews actor successfully finished his job.
-
-## 🧩 Components generator
-
-Birdel can generate actors (or components same to ViewComponent generator)
-
-```
-# Nested namespace example
-$ birdel act Ui::AngryCatActor
-```
-
-```
-app/
-├─ bactors/
-├─── ui/
-├───── angry_cat_actor/
-├─────── angry_cat_actor.rb
-├─────── angry_cat_actor_specification.rb
-```
-
-```
-$ birdel com Ui::TopBarComponent
-```
-
-```
-app/
-├─ components/
-│  ├─ ui/
-│  │  ├─ top_bar_component/
-│  │  │  ├─ top_bar_component.rb
-│  │  │  ├─ top_bar_component.js
-│  │  │  ├─ top_bar_component.css
-│  │  │  ├─ top_bar_component_controller.js
-│  │  │  └─ top_bar_component_actor.js
-```
-
-## 📈 Synth - Building indexes
-
-You should store your entries same to this:
-```
-app/
-├─ assets/
-│  ├─ stylesheets/
-│  │  ├─ bentries/
-│  │  │  ├─ home/
-│  │  │  │  ├─ index.css
-│  │  │  │  ├─ components.css
-│  │  │  │  ├─ precomponents.json
-│  │  │  │  └─ components.json
-│  │  │  ├─ some_page/
-│  │  │  │  ├─ index.css
-│  │  │  │  ├─ components.css
-│  │  │  │  ├─ precomponents.json
-│  │  │  │  └─ components.json
-
-# Feel free to put bentries/ folder inside some nested folder in stylesheets/
+  //Response example
+  // {
+  //   "ok": true,
+  //   "message": "Order processed successfully",
+  //   "data": {
+  //     "actor": "ui__sunny_squirrel_actor",
+  //     "method": "get_article",
+  //     "outputs": {
+  //       "articleId": 69
+  //     },
+  //     "html": "<html from required_component>",
+  //   },
+  //   "callback": {
+  //     "component":   "home--articles-component",
+  //     "actor":       "articles-component-actor",
+  //     "method":      "renderArticle",
+  //     "resource_id": false
+  //   }
+  // }
 ```
 
-```
-# Resynchoronize entries
-$ birdel synth
+
+```ruby
+# Actor processor
+class SunnySquirrelActor::SunnySquirrelActor
+  def get_article(inputs, current_user)
+    article_id = inputs.fetch("articleId")
+    article = Article.find_by(id: cupboard_id)
+    return {ok: false, message: "Article not found", outputs: {}} unless article
+    return {ok: true, message: "Article", outputs: {article: article}}
+  end
+end
 ```
 
+```ruby
+  #Your main channel for current entry page
+  class HomeChannel < ApplicationCable::Channel
+    state_attr_accessor :first_stream
+    include Birdel::Rona
+
+    def subscribed
+      self.first_stream = "#{params[:channel]}_#{params[:id]}"
+      stream_from self.first_stream
+    end
+  end
 ```
+
+## Blah Blah Blah
+
+- [ ] Cif - Chain of Responsibility pattern
+- [x] Components generator
+- [ ] Actors generator
+- [ ] Actors specifications
+- [x] Synth - rewrite CSS ans JS indexes
+- [x] Map - generate entry page
+
+## Other examples
+```ruby
 # precomponents.json example
 
 [
@@ -84,63 +93,46 @@ $ birdel synth
   "ui/bentries/home_component/home_component",
   "ui/mix/mini_product_component/mini_product_component"
 ]
-```
 
-## 📜 Request/Response specifications
+# Entry pages structure
+app/
+├─ assets/
+│  ├─ stylesheets/
+│  │  ├─ bentries/
+│  │  │  ├─ some_page/
+│  │  │  │  ├─ index.css
+│  │  │  │  ├─ components.css
+│  │  │  │  ├─ precomponents.css.json
+│  │  │  │  └─ components.css.json
+│  │  │  ├─ otherpage/
+│  │  │  │  ├─ index.css
+│  │  │  │  ├─ components.css
+│  │  │  │  ├─ precomponents.css
+│  │  │  │  ├─ precomponents.css.json
+│  │  │  │  └─ components.css.json
+...
+├─ javascript/
+│  ├─ bentries/
+│  │  ├─ some_page/
+│  │  │  ├─ index.js
+│  │  │  ├─ components.js
+│  │  │  └─ components.js.json
 
-```ruby
-#"actorDirect" and "actorThrough" - still an idea for some field
-#Request
-{
-  "actor": "angry_cat_actor",
-  "method": "process_order",
-  "required_component": "ui--bars--top-bar-component",
-  "inputs": {
-    "customer": "John Doe",
-    "items": [
-      { "name": "Milk", "price": 1.5 },
-      { "name": "Bread", "price": 2.5 }
-    ]
-  },
-  "callback": {
-    "actor": "angry_swallow_actor",
-    "method": "process_bla",
-    "inputs": {
-      "customer": "John Doe",
-      "items": [
-        { "name": "Milk", "price": 1.5 },
-        { "name": "Bread", "price": 2.5 }
-      ]
-    }
-  }
-}
+# Actors structure
+app/
+├─ bactors/
+├─── angry_cat_actor/
+├───── angry_cat_actor.rb
 
-#Response
-{
-  "ok": true,
-  "message": "Order processed successfully",
-  "data": {
-    "actor": "angry_cat_actor",
-    "method": "process_order",
-    "outputs": {
-      "order_id": 1234,
-      "total_amount": 4.0,
-    },
-    "html": "<div></div>",
-  }
-}
-```
-
-## Actor
-
-```ruby
-class AngryCatActor::AngryCatActor < Birdel::BaseActor
-  def initialize()
-  end
-  def process_order
-
-  end
-end
+# Component structure
+app/
+├─ components/
+│  ├─ top_bar_component/
+│  │  ├─ top_bar_component.rb
+│  │  ├─ top_bar_component.js
+│  │  ├─ top_bar_component.css
+│  │  ├─ top_bar_component_controller.js
+│  │  └─ top_bar_component_actor.js
 ```
 
 ## Actor Specification example
