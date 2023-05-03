@@ -6,8 +6,8 @@ This module proces JSON request and send inputs to actor method. Inside actor me
 ### Rona usage example
 
 ```js
-  // Js request from any Birdel actor or Stimulus controller
-  const req = {
+  // Birdel.js request
+  window.Birdel.send({
     "actor": "ui__sunny_squirrel_actor",
     "method": "get_article",
     "required_component": "home--article-component",
@@ -20,28 +20,61 @@ This module proces JSON request and send inputs to actor method. Inside actor me
       "method":      "renderArticle",
       "resource_id": false
     }
-  }
-  window.Birdel.send(req);
+  });
 
   //Response example
-  // {
-  //   "ok": true,
-  //   "message": "Order processed successfully",
-  //   "data": {
-  //     "actor": "ui__sunny_squirrel_actor",
-  //     "method": "get_article",
-  //     "outputs": {
-  //       "articleId": 69
-  //     },
-  //     "html": "<html from required_component>",
-  //   },
-  //   "callback": {
-  //     "component":   "home--articles-component",
-  //     "actor":       "articles-component-actor",
-  //     "method":      "renderArticle",
-  //     "resource_id": false
-  //   }
-  // }
+  {
+    "ok": true,
+    "message": "Rendered article",
+    "data": {
+      "actor": "ui__sunny_squirrel_actor",
+      "method": "get_article",
+      "outputs": {
+        "article": {id:...}
+      },
+      "html": "<div>My Article component html</div>",
+    },
+    "callback": {
+      "component":   "home--articles-component",
+      "actor":       "articles-component-actor",
+      "method":      "renderArticle",
+      "resource_id": false
+    }
+  }
+```
+
+```js
+  // Birdel.js Direct request
+  window.Birdel.sendDirect({
+    "required_component": "home--confirm-modal-component",
+    "inputs": {
+      "confirmMessage": "Are you sure?"
+    },
+    "callback": {
+      "component":   "home--modals-component",
+      "actor":       "modals-component-actor",
+      "method":      "appendModal",
+      "resource_id": false
+    }
+  });
+
+  //Response example
+  {
+    "ok": true,
+    "message": "Actor Direct",
+    "data": {
+      "outputs": {
+        "confirmMessage": "Are you sure?"
+      },
+      "html": "<div>My confirmation modal component html</div>",
+    },
+    "callback": {
+      "component":   "home--articles-component",
+      "actor":       "articles-component-actor",
+      "method":      "renderArticle",
+      "resource_id": false
+    }
+  }
 ```
 
 
@@ -79,60 +112,97 @@ end
 - [x] Synth - rewrite CSS ans JS indexes
 - [x] Map - generate entry page
 
-## Other examples
-```ruby
-# precomponents.json example
+## 📝 Map
 
-[
-  "ui/birdel/fantasy",
-  "ui/birdel/layout"
-]
+Entry pages indexes generator module
 
-# components.json example
-[
-  "ui/bentries/home_component/home_component",
-  "ui/mix/mini_product_component/mini_product_component"
-]
+```bash
+$ birdel map Ui::Bentries::Home
+# + app/assets/stylesheets/ui/bentries/home/components.css.json
+# + app/assets/stylesheets/ui/bentries/home/precomponents.css.json
+# + app/assets/stylesheets/ui/bentries/home/components.css
+# + app/assets/stylesheets/ui/bentries/home/precomponents.css
+# + app/assets/stylesheets/ui/bentries/home/index.css
 
-# Entry pages structure
+# + app/javascript/ui/bentries/home/components.js.json
+# + app/javascript/ui/bentries/home/components.js
+# + app/javascript/ui/bentries/home/index.js
+
+# + app/viewslayouts/ui/bentries/home/index.html.erb
+```
+
+### Visualized files structure
+```
+# Css structure
 app/
 ├─ assets/
 │  ├─ stylesheets/
+│  │  ├─ ui/
+│  │  │  ├─ bentries/
+│  │  │  │  ├─ some_page/
+│  │  │  │  │  ├─ index.css
+│  │  │  │  │  ├─ components.css
+│  │  │  │  │  ├─ precomponents.css.json
+│  │  │  │  │  └─ components.css.json
+
+# Javascript structure
+├─ javascript/
+│  ├─ ui/
 │  │  ├─ bentries/
 │  │  │  ├─ some_page/
-│  │  │  │  ├─ index.css
-│  │  │  │  ├─ components.css
-│  │  │  │  ├─ precomponents.css.json
-│  │  │  │  └─ components.css.json
-│  │  │  ├─ otherpage/
-│  │  │  │  ├─ index.css
-│  │  │  │  ├─ components.css
-│  │  │  │  ├─ precomponents.css
-│  │  │  │  ├─ precomponents.css.json
-│  │  │  │  └─ components.css.json
-...
-├─ javascript/
-│  ├─ bentries/
-│  │  ├─ some_page/
-│  │  │  ├─ index.js
-│  │  │  ├─ components.js
-│  │  │  └─ components.js.json
+│  │  │  │  ├─ index.js
+│  │  │  │  ├─ components.js
+│  │  │  │  └─ components.js.json
 
 # Actors structure
 app/
-├─ bactors/
-├─── angry_cat_actor/
-├───── angry_cat_actor.rb
+├─ ui/
+│  ├─ bactors/
+│  │  ├─ angry_cat_actor/
+│  │  │  └─ angry_cat_actor.rb
 
-# Component structure
+# Component structure random example
 app/
-├─ components/
-│  ├─ top_bar_component/
-│  │  ├─ top_bar_component.rb
-│  │  ├─ top_bar_component.js
-│  │  ├─ top_bar_component.css
-│  │  ├─ top_bar_component_controller.js
-│  │  └─ top_bar_component_actor.js
+├─ ui/
+│  ├─ bentries/
+│  │  ├─ home/
+│  │  │  ├─ home_component/
+│  │  │  │  ├─ home_component.rb
+│  │  │  │  ├─ home_component.js
+│  │  │  │  ├─ home_component.css
+│  │  │  │  ├─ home_component_controller.js
+│  │  │  │  └─ home_component_actor.js
+│  ├─ mix/
+│  │  ├─ home/
+│  │  │  ├─ top_bar_component/
+│  │  │  │  ├─ top_bar_component.rb
+│  │  │  │  ├─ top_bar_component.js
+│  │  │  │  ├─ top_bar_component.css
+│  │  │  │  ├─ top_bar_component_controller.js
+│  │  │  │  └─ top_bar_component_actor.js
+```
+
+
+
+```ruby
+# app/assets/stylesheets/ui/home/precomponents.json
+
+[
+  "ui/birdel/dropdown",
+  "ui/birdel/layout"
+]
+
+# app/assets/stylesheets/ui/home/components.css.json
+[
+  "ui/bentries/home/home_component/home_component",
+  "ui/mix/home/mini_product_component/mini_product_component"
+]
+
+# app/views/layouts/ui/bentries/home/index.html.erb
+...
+  <%= stylesheet_link_tag "ui/bentries/home/index", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "ui/bentries/home/index", "data-turbo-track": "reload", defer: true, type: "module" %>
+...
 ```
 
 ## Actor Specification example
