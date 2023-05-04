@@ -47,7 +47,7 @@ module Birdel
         end
       end
 
-      p " "
+      puts ""
 
       if full_js_entry_path.exist?
         puts "Entry #{full_js_entry_path.relative_path_from(myapp_path)} already exists".red.bold
@@ -81,7 +81,7 @@ module Birdel
       css_index_filename_without_extension = css_index_path.basename('.css').to_s
       css_index_formatted_path = "#{css_index_directory_path}/#{css_index_filename_without_extension}"
 
-      p " "
+      puts ""
 
       if full_layout_entry_path.exist?
         puts "Entry #{full_layout_entry_path.relative_path_from(myapp_path)} already exists".red.bold
