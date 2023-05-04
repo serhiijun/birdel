@@ -1,7 +1,6 @@
 module Birdel
   module Com
     def self.roll(component_ns)
-      p component_ns
       app_path               = Pathname.new("#{Dir.pwd}")
       components_path        = app_path.join("app", "components")
       component_ns_camelized = component_ns.split("::").map(&:camelize).join("::")

@@ -54,13 +54,13 @@ module Birdel
           end
         end
       end
-      puts "(css-success) Building finished.".green
+      puts "(css-success) Building finished.".yellow
       puts ""
       
       js_bentries_path.each_child do |entry_folder_path|
         index_path = entry_folder_path.join("components.js")
         components_json_path = entry_folder_path.join("components.js.json")
-        puts "(js) Building #{index_path.relative_path_from(app_folder_path)}".green
+        puts "(js) Building #{index_path.relative_path_from(app_folder_path)}".yellow
         puts "-> (js) Components...".yellow
         File.truncate(index_path, 0)
         component_controllers = JSON.parse(File.read(components_json_path))

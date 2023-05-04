@@ -39,13 +39,15 @@ module Birdel
           if full_css_entry_path.join(file[:name]).exist?
             puts "File #{full_css_entry_path.join(file[:name]).relative_path_from(myapp_path)} already exists".red.bold
           else
-            puts full_css_entry_path.join(file[:name]).to_s.green.bold
+            puts "+ #{full_css_entry_path.join(file[:name]).relative_path_from(myapp_path).to_s}".green.bold
             full_css_entry_path.join(file[:name]).open("w") do |f|
               f.write(file[:content])
             end
           end
         end
       end
+
+      p " "
 
       if full_js_entry_path.exist?
         puts "Entry #{full_js_entry_path.relative_path_from(myapp_path)} already exists".red.bold
@@ -54,8 +56,6 @@ module Birdel
         js_entry_files = [
           { name: "components.js",         content: "" },
           { name: "components.js.json",    content: "[]" },
-          { name: "precomponents.js",      content: "" },
-          { name: "precomponents.js.json", content: "[]" },
           { name: "index.js",              content: "import \"./components\";"},
         ]
         js_entry_files.each do |file|
@@ -81,6 +81,7 @@ module Birdel
       css_index_filename_without_extension = css_index_path.basename('.css').to_s
       css_index_formatted_path = "#{css_index_directory_path}/#{css_index_filename_without_extension}"
 
+      p " "
 
       if full_layout_entry_path.exist?
         puts "Entry #{full_layout_entry_path.relative_path_from(myapp_path)} already exists".red.bold
