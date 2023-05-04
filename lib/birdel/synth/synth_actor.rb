@@ -10,67 +10,56 @@ module Birdel
       js_application_file_path = js_folder_path.join("ui/application.js")
       css_bentries_path        = stylesheets_folder_path.join("ui/bentries")
       js_bentries_path         = js_folder_path.join("ui/bentries")
-      
-      css_entries_error = false
-      js_entries_error = false
+
       css_bentries_path.each_child do |entry_folder_path|
-        # entry_folder_path = Pathname.new(entry_folder)
-        # entry_folder_index_path = Pathname.new("#{entry_folder}/components.css")
-        entry_folder_index_path = entry_folder_path.join("components.css")
-        puts "(css) Building #{entry_folder_index_path.relative_path_from(app_folder_path)}".yellow.bold
-        # entry_folder_components_path = Pathname.new("#{entry_folder}/components.json")
-        entry_folder_components_path = entry_folder_path.join("components.css.json")
-        entry_folder_precomponents_path = entry_folder_path.join("precomponents.css.json")
-        File.truncate(entry_folder_index_path, 0)
-        file = File.open(entry_folder_index_path, "w")
+        precomponents_css = entry_folder_path.join("precomponents.css")
+        components_css = entry_folder_path.join("components.css")
+        File.truncate(precomponents_css, 0)
+        File.truncate(components_css, 0)
+        
+        puts "(css) Building #{precomponents_css.relative_path_from(app_folder_path)}".yellow.bold
+        precomponents_css_file = File.open(precomponents_css, "w")
+        components_css_file = File.open(components_css, "w")
+        
+        components_json = entry_folder_path.join("components.css.json")
+        precomponents_json = entry_folder_path.join("precomponents.css.json")
         
         #precomponents
         puts "-> Precomponents...".yellow
-        precomponents = JSON.parse(File.read(entry_folder_precomponents_path))
+        precomponents = JSON.parse(File.read(precomponents_json))
         precomponents.each do |precomponent_path_string|
-          # # file_path = Pathname.new("#{stylesheets_folder_path.to_s}/#{precomponent_path_string}.css")
           file_path = stylesheets_folder_path.join("#{precomponent_path_string}.css")
           if file_path.exist?
             puts "+ #{precomponent_path_string.split("/").last}.css".green
-            file.puts "@import url(\"#{file_path.relative_path_from(entry_folder_path).to_s}\");"
+            precomponents_css_file.puts "@import url(\"#{file_path.relative_path_from(entry_folder_path).to_s}\");"
           else
-            css_entries_error = true
             puts "File not found: #{file_path}".red
+            exit
           end
         end
       
-        file.puts ""
-      
         #components
         puts "-> Components...".yellow
-        components = JSON.parse(File.read(entry_folder_components_path))
+        components = JSON.parse(File.read(components_json))
         components.each do |component_path_string|
-          # full_component_path = Pathname.new("#{components_folder_path.to_s}/#{component_path_string}.css")
           full_component_path = components_folder_path.join("#{component_path_string}.css")
           if full_component_path.exist?
             file_name = component_path_string.split("/").last
             puts "+ #{file_name}.css".green
-            file.puts "@import url(\"#{full_component_path.relative_path_from(entry_folder_path).to_s}\");"
+            components_css.puts "@import url(\"#{full_component_path.relative_path_from(entry_folder_path).to_s}\");"
           else
-            css_entries_error = true
             puts "Component not found: #{component_path_string}".red
-            puts "Check => #{entry_folder_components_path.relative_path_from(root_dir_path)}".red.bold
+            puts "Check => #{components_json.relative_path_from(root_dir_path)}".red.bold
+            exit
           end
         end
       end
-      if css_entries_error
-        puts "(css-error) Building failed.".red
-        exit
-      end 
       puts "(css-success) Building finished.".green
       puts ""
       
       js_bentries_path.each_child do |entry_folder_path|
-      # js_entries.each do |entry|
-        # index_path = Pathname.new("#{entry}/components.js")
         index_path = entry_folder_path.join("components.js")
         components_json_path = entry_folder_path.join("components.js.json")
-        # entry_folder_path = Pathname.new(entry)
         puts "(js) Building #{index_path.relative_path_from(app_folder_path)}".green
         puts "-> (js) Components...".yellow
         File.truncate(index_path, 0)
@@ -83,7 +72,6 @@ module Birdel
           path_parts = component_path.split("/")
           component_name = path_parts.pop
           controller_from_components = "#{component_path}/#{component_name}_controller"
-          # component_controller_path = Pathname.new("#{components_folder_path.to_s}/#{controller_from_components}.js")
           component_controller_path = components_folder_path.join("#{controller_from_components}.js")
           if component_controller_path.exist?
             component_path_dashed = component_path.tr("_", "-").gsub("/", "--")
@@ -95,14 +83,10 @@ module Birdel
             file.puts ""
             puts "+ #{component_path_dashed}"
           else
-            js_entries_error = true
             puts "Stimulus controller not found: #{component_path}".red
+            exit
           end
         end
-      end
-      if js_entries_error
-        puts "(js-error) Building failed.".red
-        exit
       end
       puts "(js-success) Building finished.".green
     end

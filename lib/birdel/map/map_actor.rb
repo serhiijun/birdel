@@ -27,7 +27,13 @@ module Birdel
           { name: "components.css.json",    content: "[]" },
           { name: "precomponents.css",      content: "" },
           { name: "precomponents.css.json", content: "[]" },
-          { name: "index.css",              content: "@import url(\"./components.css\");" },
+{
+  name: "index.css",
+  content: "
+@import url(\"./precomponents.css\");
+@import url(\"./components.css\");
+"
+},
         ]
         css_entry_files.each do |file|
           if full_css_entry_path.join(file[:name]).exist?
