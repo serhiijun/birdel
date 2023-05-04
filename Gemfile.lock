@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    birdel (2.3.1)
+    birdel (2.3.2)
 
 GEM
   remote: https://rubygems.org/

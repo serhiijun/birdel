@@ -1,4 +1,4 @@
-require 'birder'
+require 'birdel'
 
 module Birdel
   class CLI
