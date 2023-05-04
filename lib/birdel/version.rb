@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Birdel
-  VERSION = "1.2.0"
+  VERSION = "2.0.1"
 end

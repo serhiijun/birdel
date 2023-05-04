@@ -1,8 +1,8 @@
 require 'thor'
-require_relative "birdel/synth/synth_actor"
-require_relative "birdel/com/com_actor"
-require_relative "birdel/map/map_actor"
-require_relative "birdel/component/component_actor"
+require_relative "synth/synth_actor"
+require_relative "com/com_actor"
+require_relative "map/map_actor"
+require_relative "component/component_actor"
 
 module Birdel
   class CLI < Thor
