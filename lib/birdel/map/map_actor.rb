@@ -1,7 +1,7 @@
 
 module Birdel
   module Map
-    def roll(entry_ns)
+    def self.roll(entry_ns)
       myapp_path             = Pathname.new("#{Dir.pwd}")
       stylesheets_path       = myapp_path.join("app", "assets", "stylesheets")
       javascript_path        = myapp_path.join("app", "javascript")

@@ -1,6 +1,6 @@
 module Birdel
   module Com
-    def roll
+    def self.roll
       app_path               = Pathname.new("#{Dir.pwd}")
       components_path        = app_path.join("app", "components")
       component_ns           = ARGV[0]
