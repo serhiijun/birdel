@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'birdel/cli'
+
+Birdel::CLI.start(ARGV)

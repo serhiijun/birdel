@@ -48,7 +48,7 @@ module Birdel
         }
       }
       res[:callback]              = callback
-      res[:callback][:resourceId] = method_res[:resource_id] if method_res[:resource_id]
+      res[:callback][:resourceId] = callback[:resource_id]
       ActionCable.server.broadcast(self.first_stream, res)
     end
   end
