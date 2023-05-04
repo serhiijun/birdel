@@ -46,7 +46,7 @@ module Birdel
           if full_component_path.exist?
             file_name = component_path_string.split("/").last
             puts "+ #{file_name}.css".green
-            components_css.puts "@import url(\"#{full_component_path.relative_path_from(entry_folder_path).to_s}\");"
+            components_css_file.puts "@import url(\"#{full_component_path.relative_path_from(entry_folder_path).to_s}\");"
           else
             puts "Component not found: #{component_path_string}".red
             puts "Check => #{components_json.relative_path_from(root_dir_path)}".red.bold
