@@ -28,28 +28,9 @@ module Birdel
       end
       if callback
         res[:callback] = callback
-        res[:callback][:resourceId] = method_res[:resource_id] if method_res[:resource_id]
+        res[:callback][:resourceId] = method_res[:resource_id].present? ? method_res[:resource_id] : false
         ActionCable.server.broadcast(self.first_stream, res)
       end
-    end
-
-    def actorDirect(data)
-      inputs             = data.fetch("inputs")
-      callback           = data.fetch("callback")
-      required_component = data.fetch("required_component")
-      component_name     = required_component.split('--').map{|i| i.gsub("-", "_").camelize}.join('::') + '::' + required_component.split('--').last.gsub("-", "_").camelize
-      component          = component_name.constantize.new(inputs: inputs)
-      res = {
-        "ok": true,
-        "message": "Actor Direct",
-        "data": {
-          "outputs": inputs,
-          "html": ApplicationController.render(component, layout: false)
-        }
-      }
-      res[:callback]              = callback
-      res[:callback][:resourceId] = callback[:resource_id]
-      ActionCable.server.broadcast(self.first_stream, res)
     end
   end
 end
