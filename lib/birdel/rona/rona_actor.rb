@@ -28,7 +28,13 @@ module Birdel
       end
       if callback
         res[:callback] = callback
-        res[:callback][:resourceId] = method_res[:resource_id].present? ? method_res[:resource_id] : false
+        # first - check if Actor method returned specific resource_id
+        # otherwise - set resource_id from callback if it exists or set false
+        if method_res[:resource_id].present?
+          res[:callback][:resourceId] = method_res[:resource_id]
+        else
+          res[:callback][:resourceId] = callback[:resource_id].present? ? callback[:resource_id] : false
+        end
         ActionCable.server.broadcast(self.first_stream, res)
       end
     end
