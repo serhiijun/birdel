@@ -4,26 +4,26 @@ module Birdel
     def actorThrough(data)
       actor_name         = data.fetch("actor")
       inputs             = data.fetch("inputs")
-      callback           = data.fetch("callback")
+      callback           = data.fetch("callback", false)
       required_component = data.fetch("required_component")
       method             = data.fetch("method")
 
       actor_string = actor_name.split("__").map{|e| e.camelize}.join("::")
-      res_name = actor_string << "::#{actor_string.split("::")[-1]}"
-      actor = res_name.constantize.new()
-      method_res = actor.public_send(method, inputs, self.current_user)
+      res_name     = actor_string << "::#{actor_string.split("::")[-1]}"
+      actor        = res_name.constantize.new()
+      method_res   = actor.public_send(method, inputs, self.current_user)
       res = {
-        "ok": method_res[:ok],
-        "message": method_res[:message],
+        "ok":        method_res[:ok],
+        "message":   method_res[:message],
         "data": {
-          "actor": actor_name,
-          "method": method,
+          "actor":   actor_name,
+          "method":  method,
           "outputs": method_res[:outputs]
         }
       }
       if required_component
-        component_name = required_component.split('--').map{|i| i.gsub("-", "_").camelize}.join('::') + '::' + required_component.split('--').last.gsub("-", "_").camelize
-        component = component_name.constantize.new(inputs: method_res[:outputs])
+        component_name    = required_component.split('--').map{|i| i.gsub("-", "_").camelize}.join('::') + '::' + required_component.split('--').last.gsub("-", "_").camelize
+        component         = component_name.constantize.new(inputs: method_res[:outputs])
         res[:data][:html] = ApplicationController.render(component, layout: false)
       end
       if callback
@@ -33,7 +33,7 @@ module Birdel
         if method_res[:resource_id].present?
           res[:callback][:resourceId] = method_res[:resource_id]
         else
-          res[:callback][:resourceId] = callback[:resourceId].present? ? callback[:resourceId] : false
+          res[:callback][:resourceId] = callback["resourceId"].present? ? callback["resourceId"] : false
         end
         ActionCable.server.broadcast(self.first_stream, res)
       end
