@@ -33,7 +33,7 @@ module Birdel
         if method_res[:resource_id].present?
           res[:callback][:resourceId] = method_res[:resource_id]
         else
-          res[:callback][:resourceId] = callback[:resource_id].present? ? callback[:resource_id] : false
+          res[:callback][:resourceId] = callback[:resourceId].present? ? callback[:resourceId] : false
         end
         ActionCable.server.broadcast(self.first_stream, res)
       end
