@@ -14,5 +14,3 @@ gem "rubocop", "~> 1.21"
 gem 'activesupport', '~> 7.0', '>= 7.0.4.3'
 
 gem 'colored', '~> 1.2'
-
-gem 'thor', '~> 1.2', '>= 1.2.1'

@@ -5,11 +5,11 @@ require_relative "lib/birdel/version"
 Gem::Specification.new do |spec|
   spec.name = "birdel"
   spec.version = Birdel::VERSION
-  spec.authors = ["Serhii"]
+  spec.authors = ["@serhiijun"]
   spec.email = ["serhii.jun@gmail.com"]
 
-  spec.summary = "Make actors great again!"
-  spec.description = "Send json messages to your actors and get view_components back! Now you can be sure that your actors are processed correctly."
+  spec.summary = "Birdel actors framework for Rails."
+  spec.description = "Ruby/JS actors communication framework for Rails."
   spec.homepage = "https://github.com/serhiijun/birdel"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency 'colored', '~> 1.2'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
