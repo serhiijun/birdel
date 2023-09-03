@@ -10,8 +10,16 @@ module Birdel
 
       actor_string = actor_name.split("__").map{|e| e.camelize}.join("::")
       res_name     = actor_string << "::#{actor_string.split("::")[-1]}"
-      actor        = res_name.constantize.new()
-      method_res   = actor.public_send(method, inputs, self.current_user)
+      actor        = if res_name.constantize.ancestors.include?(Birdel::BaseActor)
+        res_name.constantize.new(current_user: self.current_user)
+      else
+        res_name.constantize.new
+      end
+      method_res   = if actor.respond_to?(:current_user)
+        actor.public_send(method, inputs)
+      else
+        actor.public_send(method, inputs, self.current_user)
+      end
       res = {
         "ok":        method_res[:ok],
         "message":   method_res[:message],

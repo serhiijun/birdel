@@ -5,6 +5,7 @@ require 'colored'
 require 'active_support/inflector'
 
 require_relative "birdel/version"
+require_relative "birdel/base/base_actor"
 require_relative "birdel/rona/rona_actor"
 require_relative "birdel/synth/synth_actor"
 require_relative "birdel/com/com_actor"
