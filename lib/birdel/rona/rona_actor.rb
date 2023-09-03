@@ -10,7 +10,7 @@ module Birdel
 
       actor_string = actor_name.split("__").map{|e| e.camelize}.join("::")
       res_name     = actor_string << "::#{actor_string.split("::")[-1]}"
-      actor        = if res_name.constantize.ancestors.include?(Birdel::BaseActor)
+      actor        = if res_name.constantize.ancestors.include?(Birdel::Base::BaseActor)
         res_name.constantize.new(current_user: self.current_user)
       else
         res_name.constantize.new
