@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    birdel (3.3.1)
+    birdel (3.4.0)
       colored (~> 1.2)
 
 GEM
