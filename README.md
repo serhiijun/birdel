@@ -14,19 +14,20 @@ $ birdel synth
 ```
 Send request
 ```js
-window.Birdel.actor("ui__angry_cat_actor")
-  .method("get_article")
-  .required_component("ui--mix--article-component") // or false
-  .inputs({
+window.Birdel.send({
+  actor: "ui__angry_cat_actor",
+  method: "get_article",
+  required_component: "ui--mix--article-component", // or false
+  inputs: {
     articleId: 69
-  })
-  .callback({
+  },
+  callback: {
     "component":   "ui--entries--home-component",
     "actor":       "home-component-actor",
     "method":      "showArticle",
-    "resource_id": false //or ID of your actor
-  })
-  .send()
+    "resourceId": false //or ID of your actor
+  } // or false
+})
 ```
 
 Full documentation is not ready and will be at https://digitalthing.io/docs/birdel, well, sorry😄

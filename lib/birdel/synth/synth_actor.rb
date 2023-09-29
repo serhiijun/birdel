@@ -75,11 +75,12 @@ module Birdel
           component_controller_path = components_folder_path.join("#{controller_from_components}.js")
           if component_controller_path.exist?
             component_path_dashed = component_path.tr("_", "-").gsub("/", "--")
-            camelized_component_name = component_name.split("_").map(&:capitalize).join
+            # camelized_component_name = component_name.split("_").map(&:capitalize).join
+            rand_name = "_#{rand(36**8).to_s(36)}"
             controller_backpath = component_controller_path.relative_path_from(entry_folder_path)
             controller_backpath_without_ext = controller_backpath.to_s.gsub(controller_backpath.extname, "")
-            file.puts "import #{camelized_component_name} from \"#{controller_backpath_without_ext}\";"
-            file.puts "application.register(\"#{component_path_dashed}\", #{camelized_component_name});"
+            file.puts "import #{rand_name} from \"#{controller_backpath_without_ext}\";"
+            file.puts "application.register(\"#{component_path_dashed}\", #{rand_name});"
             file.puts ""
             puts "+ #{component_path_dashed}"
           else
